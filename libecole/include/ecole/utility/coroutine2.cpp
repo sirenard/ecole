@@ -31,7 +31,7 @@ namespace ecole::utility {
  * @tparam Return The type of return values created by the executor.
  * @tparam Message The type of the messages that can be sent to the executor.
  */
-template <typename Return, typename Message> class Coroutine {
+template <typename Return, typename Message> class Coroutine: public std::enable_shared_from_this<Coroutine<Return, Message>> {
 	ucontext_t main_context, generator_context;
 	volatile Message message;
 	volatile Return value;
@@ -39,7 +39,8 @@ template <typename Return, typename Message> class Coroutine {
 	char stack_[STACK_SIZE];
 
 	template <class Function, class... Args>
-	static void run(Function&& f, Coroutine* coroutine, Args&&... args);
+	static void run(Function&& f, std::weak_ptr<Coroutine> const& coroutine, Args&&... args);
+
 public:
 	/** Return or nothing if the corutine has finished. */
 	using MaybeReturn = std::optional<Return>;
@@ -61,6 +62,11 @@ public:
 	 * @param args Additional parameters to be passed as additinal arguments to ``func``.
 	 */
 	template <class Function, class... Args> Coroutine(Function&& func, Args&&... args);
+
+	template <class Function, class... Args>
+	static std::shared_ptr<Coroutine> test(Function&& func, Args&&... args) {
+		return std::make_shared<Coroutine<Return, Message>>(&func, &args...);
+	}
 
 	~Coroutine()=default;
 
@@ -110,13 +116,15 @@ Coroutine<Return, Message>::Coroutine(Function&& func_, Args&&... args_):
 		generator_context.uc_stack.ss_sp = stack_;
 		generator_context.uc_stack.ss_size = sizeof(stack_);
 
-		makecontext(&generator_context, (void (*)(void))Coroutine::run<Function, Args...>, sizeof...(Args)+2, &func_, this, &args_...);
+		std::weak_ptr<Coroutine> const weak = this->shared_from_this();
+
+
+		makecontext(&generator_context, (void (*)(void))Coroutine::run<Function, Args...>, sizeof...(Args)+2, &func_, weak, &args_...);
 	}
 }
 
 template <typename Return, typename Message>
 auto Coroutine<Return, Message>::yield(Return value) -> MessageOrStop {
-	int x=12;
 	this->value = value;
 	swapcontext(&generator_context, &main_context);
 	return message;
@@ -139,9 +147,7 @@ auto Coroutine<Return, Message>::is_stop(MessageOrStop const& message) -> bool {
 
 template <typename Return, typename Message>
 template <class Function, class... Args>
-void Coroutine<Return, Message>::run(Function&& f, Coroutine* coroutine, Args&&... args) {
-	//	auto c = std::make_shared<Coroutine<Return, Message>>(coroutine);
-	//	std::weak_ptr weak = c;
+void Coroutine<Return, Message>::run(Function&& f, std::weak_ptr<Executor> const& coroutine, Args&&... args) {
 	f(coroutine, args...);
 }
 
