@@ -1,17 +1,13 @@
 #pragma once
 
 #include <condition_variable>
-#include <exception>
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <thread>
-#include <utility>
 #include <variant>
 #include <ucontext.h>
-#include <functional>
 
-#define STACK_SIZE 8192
+#define STACK_SIZE 18192
 
 namespace ecole::utility {
 
@@ -32,18 +28,9 @@ namespace ecole::utility {
  * @tparam Message The type of the messages that can be sent to the executor.
  */
 template <typename Return, typename Message> class Coroutine {
-	ucontext_t main_context, generator_context;
-	volatile Message message;
-	volatile Return value;
-
-	char stack_[STACK_SIZE];
-
-	template <class Function, class... Args>
-	static void run(Function&& f, Coroutine* coroutine, Args&&... args);
 public:
 	/** Return or nothing if the corutine has finished. */
 	using MaybeReturn = std::optional<Return>;
-	using Executor = Coroutine;
 
 	/** Type indicating that the executor must terminate. */
 	struct StopToken {};
@@ -62,7 +49,11 @@ public:
 	 */
 	template <class Function, class... Args> Coroutine(Function&& func, Args&&... args);
 
-	~Coroutine()=default;
+
+	~Coroutine(){
+		delete weak_executor;
+		delete executor;
+	};
 
 	/**
 	 * Wait for the executor to yield a value.
@@ -82,7 +73,78 @@ public:
 	/** Return whether the message is a ``StopToken``/ */
 	static auto is_stop(MessageOrStop const& message) -> bool;
 
-	auto yield(Return value) -> MessageOrStop;
+	class Executor{
+		ucontext_t main_context, generator_context;
+		Message message;
+		MaybeReturn value;
+
+		char stack_main[STACK_SIZE];
+		char stack_generator[STACK_SIZE];
+
+		template <class Function, class... Args>
+		static void run(Function&& f, std::weak_ptr<Executor>* executor, Args&&... args) {
+			std::weak_ptr<Executor> sharedPtr = *executor;
+			f(sharedPtr, args...);
+			sharedPtr.lock()->value.reset();
+			setcontext(&(executor->lock()->main_context));
+		}
+
+	public:
+		using StopToken = Coroutine::StopToken;
+		Executor():
+			main_context(),
+			generator_context() {
+		}
+
+		~Executor(){
+			std::flush(std::cout);
+		}
+
+		template <typename Function, typename... Args>
+		void start(std::weak_ptr<Executor>* executor, Function&& func_, Args&&... args_){
+			volatile bool b = true;
+
+			getcontext(&main_context);
+			main_context.uc_stack.ss_sp = stack_main;
+			main_context.uc_stack.ss_size = sizeof(stack_main);
+
+			if (b) {
+				b = false;
+
+				getcontext(&generator_context);
+				generator_context.uc_stack.ss_sp = stack_generator;
+				generator_context.uc_stack.ss_size = sizeof(stack_generator);
+
+				makecontext(
+					&generator_context,
+					(void (*)(void))Executor::run<Function, Args...>,
+					sizeof...(Args) + 2,
+					&func_,
+					executor,
+					&args_...);
+			}
+		}
+
+		MaybeReturn wait(){
+			swapcontext(&main_context, &generator_context);
+			return std::move(value);
+		}
+
+		void resume(Message instruction){
+			message=std::move(instruction);
+		}
+
+		MessageOrStop yield(Return value){
+			this->value = std::move(value);
+			swapcontext(&generator_context, &main_context);
+			return std::move(message);
+		}
+	};
+
+private:
+	std::shared_ptr<Executor>* executor;
+	std::weak_ptr<Executor>* weak_executor;
+	//Executor* executor;
 };
 }  // namespace ecole::utility
 
@@ -96,54 +158,25 @@ namespace ecole::utility {
 template <typename Return, typename Message>
 template <typename Function, typename... Args>
 Coroutine<Return, Message>::Coroutine(Function&& func_, Args&&... args_):
-	main_context(),
-	generator_context(){
-	volatile bool b=true;
-
-	getcontext(&main_context);
-	main_context.uc_stack.ss_sp = stack_;
-	main_context.uc_stack.ss_size = sizeof(stack_);
-
-	if(b){
-		b=false;
-		getcontext(&generator_context);
-		generator_context.uc_stack.ss_sp = stack_;
-		generator_context.uc_stack.ss_size = sizeof(stack_);
-
-		makecontext(&generator_context, (void (*)(void))Coroutine::run<Function, Args...>, sizeof...(Args)+2, &func_, this, &args_...);
-	}
+	executor(new std::shared_ptr<Executor>()),
+	weak_executor(new std::weak_ptr<Executor>()){
+	(*executor) = std::make_shared<Executor>();
+	(*weak_executor) = *executor;
+	(*executor)->template start<>(weak_executor, func_, args_...);
 }
 
-template <typename Return, typename Message>
-auto Coroutine<Return, Message>::yield(Return value) -> MessageOrStop {
-	int x=12;
-	this->value = value;
-	swapcontext(&generator_context, &main_context);
-	return message;
-}
 
 template <typename Return, typename Message> auto Coroutine<Return, Message>::wait() -> MaybeReturn {
-	swapcontext(&main_context, &generator_context);
-	return value;
+	return (*executor)->wait();
 }
 
 template <typename Return, typename Message> auto Coroutine<Return, Message>::resume(Message instruction) -> void {
-	message=instruction;
+	(*executor)->resume(instruction);
 }
 
 template <typename Return, typename Message>
 auto Coroutine<Return, Message>::is_stop(MessageOrStop const& message) -> bool {
 	return std::holds_alternative<StopToken>(message);
 }
-
-
-template <typename Return, typename Message>
-template <class Function, class... Args>
-void Coroutine<Return, Message>::run(Function&& f, Coroutine* coroutine, Args&&... args) {
-	//	auto c = std::make_shared<Coroutine<Return, Message>>(coroutine);
-	//	std::weak_ptr weak = c;
-	f(coroutine, args...);
-}
-
 
 }  // namespace ecole::utility

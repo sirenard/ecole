@@ -6,6 +6,7 @@
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#include <iostream>
 
 #include <objscip/objbranchrule.h>
 #include <objscip/objheur.h>
@@ -61,6 +62,7 @@ auto handle_executor(SCIP* scip, std::weak_ptr<Executor>& weak_executor, callbac
 				}
 			},
 			weak_executor.lock()->yield(call));
+
 	} catch (...) {
 		return {SCIP_ERROR, SCIP_DIDNOTRUN};
 	}

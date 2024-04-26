@@ -8,7 +8,7 @@
 
 using namespace ecole;
 using Coroutine = utility::Coroutine<int, int>;
-using Executor = Coroutine;
+using Executor = Coroutine::Executor;
 
 
 
@@ -25,8 +25,8 @@ int main(){
 		}
 	};
 
-	auto co = Coroutine::test(f, 5);
-	//auto co = Coroutine{f, 5};
+	//Coroutine co(f, 5);
+	auto co = Coroutine{f, 5};
 
 	for(int i=0; i<5; ++i){
 		auto x = co.wait();
