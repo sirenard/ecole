@@ -66,8 +66,11 @@ auto BranchingDynamics::step_dynamics(scip::Model& model, Defaultable<std::size_
 			throw std::invalid_argument{
 				fmt::format("Branching candidate index {} larger than the number of variables ({}).", var_idx, vars.size())};
 		}
-		// Branching
-		scip::call(SCIPbranchVar, model.get_scip_ptr(), vars[var_idx], nullptr, nullptr, nullptr);
+
+		if (SCIPvarGetLbGlobal(vars[var_idx]) != SCIPvarGetUbGlobal(vars[var_idx])) {
+			// Branching
+			scip::call(SCIPbranchVar, model.get_scip_ptr(), vars[var_idx], nullptr, nullptr, nullptr);
+		}
 		scip_result = SCIP_BRANCHED;
 	}
 
