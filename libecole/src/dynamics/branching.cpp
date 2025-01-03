@@ -70,8 +70,10 @@ auto BranchingDynamics::step_dynamics(scip::Model& model, Defaultable<std::size_
 		if (SCIPvarGetLbGlobal(vars[var_idx]) != SCIPvarGetUbGlobal(vars[var_idx])) {
 			// Branching
 			scip::call(SCIPbranchVar, model.get_scip_ptr(), vars[var_idx], nullptr, nullptr, nullptr);
+			scip_result = SCIP_BRANCHED;
+		} else {
+			scip_result = SCIP_CUTOFF;
 		}
-		scip_result = SCIP_BRANCHED;
 	}
 
 	// Looping until the next LP branchrule rule callback, if it exists.
