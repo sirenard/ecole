@@ -16,7 +16,7 @@ RUN apt-get update && \
 
 # Install SCIP from source.
 # We do not need a very "complete" scip, just the bare minimum.
-ARG scip_version=9.2.1
+ARG scip_version=9.2.0
 RUN wget --no-verbose https://scip.zib.de/download/release/scipoptsuite-${scip_version}.tgz && \
     tar -xzf scipoptsuite-${scip_version}.tgz && \
     cmake -B build/ -S scipoptsuite-${scip_version} \

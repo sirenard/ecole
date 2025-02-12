@@ -94,7 +94,7 @@ target_include_directories(
 include(dependencies/public.cmake)
 include(dependencies/private.cmake)
 
-find_package(SCIP 9 REQUIRED)
+find_package(SCIP 9.2.0 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(xtl REQUIRED)
 find_package(xsimd REQUIRED)
