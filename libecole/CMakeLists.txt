@@ -110,6 +110,7 @@ target_link_libraries(
 	PUBLIC
 		scip
 		gmp
+		soplex
 		xtensor
 		xtensor::use_xsimd
 		nonstd::span-lite
