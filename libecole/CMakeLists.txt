@@ -109,6 +109,7 @@ target_link_libraries(
 	ecole-lib
 	PUBLIC
 		scip
+		gmp
 		xtensor
 		xtensor::use_xsimd
 		nonstd::span-lite
