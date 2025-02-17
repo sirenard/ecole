@@ -164,7 +164,7 @@ void bind_submodule(py::module_ m) {
 		.def(
 			"get_scip_ptr",
 			[](scip::Model& model) {
-				return (long)model.get_scip_ptr();
+				return reinterpret_cast<long>(model.get_scip_ptr());
 			})
 
 		.def("set_messagehdlr_quiet", &Model::set_messagehdlr_quiet, py::arg("quiet"))
