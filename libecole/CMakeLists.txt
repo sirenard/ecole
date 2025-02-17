@@ -108,7 +108,7 @@ find_package(robin_hood REQUIRED)
 target_link_libraries(
 	ecole-lib
 	PUBLIC
-		libscip
+		scip
 		xtensor
 		xtensor::use_xsimd
 		nonstd::span-lite
