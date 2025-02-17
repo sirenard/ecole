@@ -79,7 +79,7 @@ target_link_libraries(
 		Ecole::ecole-lib
 		range-v3::range-v3
 		Catch2::Catch2
-		libscip
+		scip
 )
 
 ecole_target_add_compile_warnings(ecole-lib)
