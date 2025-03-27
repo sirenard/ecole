@@ -161,12 +161,6 @@ void bind_submodule(py::module_ m) {
 			// is alive, as PyScipOpt is a view on the ecole Model.
 			py::keep_alive<0, 1>())
 
-		.def(
-			"get_scip_ptr",
-			[](scip::Model& model) {
-				return reinterpret_cast<long>(model.get_scip_ptr());
-			})
-
 		.def("set_messagehdlr_quiet", &Model::set_messagehdlr_quiet, py::arg("quiet"))
 
 		.def_property("name", &Model::name, &Model::set_name)
