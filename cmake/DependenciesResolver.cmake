@@ -78,9 +78,9 @@ macro(find_or_download_package)
 			FetchContent_GetProperties(${ARG_NAME})
 			if(NOT ${ARG_NAME}_POPULATED)
 				message(STATUS "Downloading ${ARG_NAME}")
-				FetchContent_Populate(${ARG_NAME})
+				FetchContent_MakeAvailable(${ARG_NAME})
 				message(STATUS "Building ${ARG_NAME}")
-				# FetchContent_Populate uses lower case name of FetchContent_Declare for directories
+				# FetchContent_MakeAvailable uses lower case name of FetchContent_Declare for directories
 				string(TOLOWER "${ARG_NAME}" ARG_NAME_LOWER)
 				build_package(
 					CONFIGURE_ARGS ${ARG_CONFIGURE_ARGS} -D "CMAKE_PREFIX_PATH=${FETCHCONTENT_INSTALL_DIR}"
