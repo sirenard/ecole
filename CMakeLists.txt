@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.5)
 
 # Adapt compiler flags if using Conda compiler packages. Before project so they are not modified.
 include(cmake/Conda.cmake)
