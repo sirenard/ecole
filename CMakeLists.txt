@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.3)
 
 # Adapt compiler flags if using Conda compiler packages. Before project so they are not modified.
 include(cmake/Conda.cmake)
@@ -53,6 +53,3 @@ if(ECOLE_BUILD_PY_EXT)
 	add_subdirectory(python/extension-helper)
 	add_subdirectory(python/ecole)
 endif()
-
-set_property(TARGET ... PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-
