@@ -1,7 +1,6 @@
 ⚠️ **Warning** ⚠️
 
-*Ecole is looking for a new home.*
-*It is not being actively developed, only critical issues will be investigated.*
+* This is a fork of the package `ecole <https://github.com/ds4dm/ecole>`
 
 
 .. image:: https://raw.githubusercontent.com/ds4dm/ecole/master/docs/_static/images/ecole-logo.svg
