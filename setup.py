@@ -76,11 +76,11 @@ def get_cmake_out_package_install_args() -> List[str]:
 
 
 skbuild.setup(
-    name="ecole",
+    name="ecole-fork",
     author="Antoine Prouvost et al.",
     version=get_version(__dir__ / "VERSION"),
-    url="https://www.ecole.ai",
-    description="Extensible Combinatorial Optimization Learning Environments",
+    url="https://github.com/sirenard/ecole",
+    description="Extensible Combinatorial Optimization Learning Environments. This is a fork of the original package ecole",
     long_description=get_file(__dir__ / "README.rst"),
     long_description_content_type="text/x-rst",
     license="BSD-3-Clause",
