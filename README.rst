@@ -1,6 +1,6 @@
 ⚠️ **Warning** ⚠️
 
-* This is a fork of the package `ecole <https://github.com/ds4dm/ecole>`
+* This is a fork of the package `ecole <https://github.com/ds4dm/ecole>`_
 
 
 .. image:: https://raw.githubusercontent.com/ds4dm/ecole/master/docs/_static/images/ecole-logo.svg
