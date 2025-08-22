@@ -563,8 +563,8 @@ void set_precomputed_static_features(TensorOut&& var_features, TensorIn const& v
  *  Main extraction function  *
  ******************************/
 
-auto extract_all_features(scip::Model& model, bool pseudo, xt::xtensor<value_type, 2> const& static_features) {
-	auto const branch_cands = pseudo ? model.pseudo_branch_cands() : model.lp_branch_cands();
+auto extract_all_features(scip::Model& model, int pseudo, xt::xtensor<value_type, 2> const& static_features) {
+	auto const branch_cands = pseudo==1 ? model.pseudo_branch_cands() : (pseudo==0 ? model.lp_branch_cands() : model.variables());
 	auto observation = xt::xtensor<value_type, 2>{{model.variables().size(), Khalil2016Obs::n_features}, std::nan("")};
 
 	auto* const scip = model.get_scip_ptr();
@@ -592,7 +592,7 @@ auto is_on_root_node(scip::Model& model) -> bool {
  *  Observation extracting function  *
  *************************************/
 
-Khalil2016::Khalil2016(bool pseudo_candidates_) noexcept : pseudo_candidates(pseudo_candidates_) {}
+Khalil2016::Khalil2016(int candidates_) noexcept : candidates(candidates_) {}
 
 void Khalil2016::before_reset(scip::Model& /* model */) {
 	static_features = decltype(static_features){};
@@ -603,7 +603,7 @@ auto Khalil2016::extract(scip::Model& model, bool /* done */) -> std::optional<K
 		if (is_on_root_node(model)) {
 			static_features = extract_static_features(model);
 		}
-		return {{extract_all_features(model, pseudo_candidates, static_features)}};
+		return {{extract_all_features(model, candidates, static_features)}};
 	}
 	return {};
 }

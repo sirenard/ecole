@@ -109,14 +109,15 @@ struct ECOLE_EXPORT Khalil2016Obs {
 
 class ECOLE_EXPORT Khalil2016 {
 public:
-	ECOLE_EXPORT Khalil2016(bool pseudo_candidates = false) noexcept;
+	// candidates = 0: lp candidates, 1: pseudo candidates, 2 all variables
+	ECOLE_EXPORT Khalil2016(int candidates = 0) noexcept;
 
 	ECOLE_EXPORT auto before_reset(scip::Model& model) -> void;
 
 	ECOLE_EXPORT auto extract(scip::Model& model, bool done) -> std::optional<Khalil2016Obs>;
 
 private:
-	bool pseudo_candidates;
+	int candidates;
 	xt::xtensor<double, 2> static_features;
 };
 
