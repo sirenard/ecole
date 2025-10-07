@@ -283,6 +283,7 @@ void bind_submodule(py::module const& m) {
 		Member{"capacity_interval", &CapacitatedFacilityLocationGenerator::Parameters::capacity_interval},
 		Member{"fixed_cost_cste_interval", &CapacitatedFacilityLocationGenerator::Parameters::fixed_cost_cste_interval},
 		Member{"fixed_cost_scale_interval", &CapacitatedFacilityLocationGenerator::Parameters::fixed_cost_scale_interval},
+		Member{"fixed_facilities", &CapacitatedFacilityLocationGenerator::Parameters::fixed_facilities},
 	};
 	// Bind CapacitatedFacilityLocationGenerator and remove intermediate Parameter class
 	auto capacitated_facility_location_gen =
@@ -355,15 +356,11 @@ void def_generate_instance_impl(PyClass& py_class, char const* docstring, Member
 	// FIXME could be constexpr but GCC 7.3 (on conda) is complaining
 	static auto const default_params = Parameters{};
 	// Bind a the static method that takes as input all parameters
-	py_class.def_static(
+	py_class.def(
 		"generate_instance",
-		// Get the type of each parameter and add it to the Python function parameters
-		[](utility::return_t<decltype(members.value)>... params, RandomGenerator& rng) {
-			// Call the C++ static function with a Parameter struct
-			return Generator::generate_instance(Parameters{params...}, rng);
+		[](Generator& self, utility::return_t<decltype(members.value)>... params, RandomGenerator& rng) {
+				return self.generate_instance(Parameters{params...}, rng);
 		},
-		// Set name for all function parameters.
-		// Fetch default value on the default parameters
 		(py::arg(members.name) = std::invoke(members.value, default_params))...,
 		py::arg("rng"),
 		py::call_guard<py::gil_scoped_release>(),

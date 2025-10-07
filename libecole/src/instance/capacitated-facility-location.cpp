@@ -38,6 +38,7 @@ scip::Model CapacitatedFacilityLocationGenerator::next() {
 }
 
 void CapacitatedFacilityLocationGenerator::seed(Seed seed) {
+	facilities_initialized = false;
 	rng.seed(seed);
 }
 
@@ -229,16 +230,22 @@ scip::Model CapacitatedFacilityLocationGenerator::generate_instance(
 
 	// Customer demand
 	auto const demands = static_cast<xvector>(randint(parameters.n_customers, parameters.demand_interval));
-	// Facilities capacity for serving customer demand
-	auto capacities = static_cast<xvector>(randint(parameters.n_facilities, parameters.capacity_interval));
-	// Fixed costs for opening facilities
-	auto const fixed_costs = static_cast<xvector>(
-		randint(parameters.n_facilities, parameters.fixed_cost_scale_interval) * xt::sqrt(capacities) +
-		randint(parameters.n_facilities, parameters.fixed_cost_cste_interval));
-	// transport costs from facility to customers
-	auto const transportation_costs = static_cast<xmatrix>(
-		unit_transportation_costs(parameters.n_customers, parameters.n_facilities, rng) *
-		xt::view(demands, xt::all(), xt::newaxis()));
+
+	if(!facilities_initialized){
+		if(parameters.fixed_facilities){
+			facilities_initialized = true;
+		}
+		// Facilities capacity for serving customer demand
+		capacities = static_cast<xvector>(randint(parameters.n_facilities, parameters.capacity_interval));
+		// Fixed costs for opening facilities
+		fixed_costs = static_cast<xvector>(
+			randint(parameters.n_facilities, parameters.fixed_cost_scale_interval) * xt::sqrt(capacities) +
+			randint(parameters.n_facilities, parameters.fixed_cost_cste_interval));
+		// transport costs from facility to customers
+		transportation_costs = static_cast<xmatrix>(
+			unit_transportation_costs(parameters.n_customers, parameters.n_facilities, rng) *
+			xt::view(demands, xt::all(), xt::newaxis()));
+	}
 
 	// Scale capacities according to ratio after sampling as stated in Cornuejols et al. (1991).
 	capacities = capacities * parameters.ratio * xt::sum(demands)() / xt::sum(capacities)();
