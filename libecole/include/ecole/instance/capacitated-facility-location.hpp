@@ -14,7 +14,6 @@ class ECOLE_EXPORT CapacitatedFacilityLocationGenerator : public InstanceGenerat
 	bool facilities_initialized = false;
 	xt::xtensor<SCIP_Real, 1> capacities;
 	xt::xtensor<SCIP_Real, 1> fixed_costs;
-	xt::xtensor<SCIP_Real, 2> transportation_costs;
 
 public:
 	struct ECOLE_EXPORT Parameters {

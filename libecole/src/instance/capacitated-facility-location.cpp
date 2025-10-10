@@ -228,9 +228,6 @@ scip::Model CapacitatedFacilityLocationGenerator::generate_instance(
 		return xt::random::randint({n}, interval.first, interval.second, rng);
 	};
 
-	// Customer demand
-	auto const demands = static_cast<xvector>(randint(parameters.n_customers, parameters.demand_interval));
-
 	if(!facilities_initialized){
 		if(parameters.fixed_facilities){
 			facilities_initialized = true;
@@ -241,15 +238,25 @@ scip::Model CapacitatedFacilityLocationGenerator::generate_instance(
 		fixed_costs = static_cast<xvector>(
 			randint(parameters.n_facilities, parameters.fixed_cost_scale_interval) * xt::sqrt(capacities) +
 			randint(parameters.n_facilities, parameters.fixed_cost_cste_interval));
-		// transport costs from facility to customers
-		transportation_costs = static_cast<xmatrix>(
-			unit_transportation_costs(parameters.n_customers, parameters.n_facilities, rng) *
-			xt::view(demands, xt::all(), xt::newaxis()));
 	}
 
-	// Scale capacities according to ratio after sampling as stated in Cornuejols et al. (1991).
-	capacities = capacities * parameters.ratio * xt::sum(demands)() / xt::sum(capacities)();
-	capacities = xt::nearbyint(capacities);
+	// Customer demand
+	auto demands = static_cast<xvector>(randint(parameters.n_customers, parameters.demand_interval));
+
+
+	// transport costs from facility to customers
+	auto transportation_costs = static_cast<xmatrix>(
+		unit_transportation_costs(parameters.n_customers, parameters.n_facilities, rng) *
+		xt::view(demands, xt::all(), xt::newaxis()));
+
+	if(!parameters.fixed_facilities){
+		// Scale capacities according to ratio after sampling as stated in Cornuejols et al. (1991).
+		capacities = capacities * parameters.ratio * xt::sum(demands)() / xt::sum(capacities)();
+		capacities = xt::nearbyint(capacities);
+	} else{ //scale the demand depending on the capacities so the capacity is constant
+		demands = demands * (1.0 / parameters.ratio) * xt::sum(capacities)() / xt::sum(demands)();
+		demands = xt::nearbyint(demands);
+	}
 
 	auto model = scip::Model::prob_basic();
 	model.set_name(fmt::format("CapacitatedFacilityLocation-{}-{}", parameters.n_customers, parameters.n_facilities));
