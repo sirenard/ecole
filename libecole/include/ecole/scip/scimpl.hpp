@@ -17,6 +17,7 @@ template <typename Return, typename Message> class Coroutine;
 namespace ecole::scip {
 
 struct ECOLE_EXPORT ScipDeleter {
+	bool own {false};
 	ECOLE_EXPORT void operator()(SCIP* ptr);
 };
 

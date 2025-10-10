@@ -135,7 +135,7 @@ void bind_submodule(py::module_ m) {
 			[](py::object const& pyscipopt_model) {
 				//if (pyscipopt_model.attr("_freescip").cast<bool>()) {
 					py::capsule cap = pyscipopt_model.attr("to_ptr")(py::arg("give_ownership") = false);
-					std::unique_ptr<SCIP, ScipDeleter> uptr = nullptr;
+					std::unique_ptr<SCIP, ScipDeleter> uptr {nullptr, ScipDeleter{false}};
 					uptr.reset(reinterpret_cast<SCIP*>(py::cast<void*>(cap)));
 					return Model{std::make_unique<Scimpl>(std::move(uptr))};
 				//}
