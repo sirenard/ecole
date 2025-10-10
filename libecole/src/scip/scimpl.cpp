@@ -190,15 +190,15 @@ auto include_reverse_callback<callback::Type::Heuristic>(
  ****************************/
 
 void ScipDeleter::operator()(SCIP* ptr) {
-	scip::call(SCIPfree, &ptr);
+	//scip::call(SCIPfree, &ptr);
 }
 
 namespace {
 
-std::unique_ptr<SCIP> create_scip() {
+std::unique_ptr<SCIP, ScipDeleter> create_scip() {
 	SCIP* scip_raw;
 	scip::call(SCIPcreate, &scip_raw);
-	std::unique_ptr<SCIP> scip_ptr = nullptr;
+	std::unique_ptr<SCIP, ScipDeleter> scip_ptr = nullptr;
 	scip_ptr.reset(scip_raw);
 	return scip_ptr;
 }
@@ -209,7 +209,7 @@ Scimpl::Scimpl() : m_scip{create_scip()} {}
 
 Scimpl::Scimpl(Scimpl&&) noexcept = default;
 
-Scimpl::Scimpl(std::unique_ptr<SCIP>&& scip_ptr) noexcept : m_scip(std::move(scip_ptr)) {}
+Scimpl::Scimpl(std::unique_ptr<SCIP, ScipDeleter>&& scip_ptr) noexcept : m_scip(std::move(scip_ptr)) {}
 
 Scimpl::~Scimpl() = default;
 

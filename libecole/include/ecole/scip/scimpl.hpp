@@ -24,7 +24,7 @@ class ECOLE_EXPORT Scimpl {
 public:
 	ECOLE_EXPORT Scimpl();
 	ECOLE_EXPORT Scimpl(Scimpl&& /*other*/) noexcept;
-	ECOLE_EXPORT Scimpl(std::unique_ptr<SCIP>&& /*scip_ptr*/) noexcept;
+	ECOLE_EXPORT Scimpl(std::unique_ptr<SCIP, ScipDeleter>&& /*scip_ptr*/) noexcept;
 	ECOLE_EXPORT ~Scimpl();
 
 	ECOLE_EXPORT auto get_scip_ptr() noexcept -> SCIP*;
@@ -39,7 +39,7 @@ public:
 private:
 	using Controller = utility::Coroutine<callback::DynamicCall, SCIP_RESULT>;
 
-	std::unique_ptr<SCIP> m_scip;
+	std::unique_ptr<SCIP, ScipDeleter> m_scip;
 	std::unique_ptr<Controller> m_controller;
 };
 
