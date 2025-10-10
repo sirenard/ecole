@@ -1,7 +1,7 @@
 ⚠️ **Warning** ⚠️
 
-* This is a fork of the package `ecole <https://github.com/ds4dm/ecole>`_ . It is modified to be used by
-`ecole <https://github.com/sirenard/boundml>`_. Using it directly may lead to unexpected behaviors.
+This is a fork of the package `ecole <https://github.com/ds4dm/ecole>`_ . It is modified to be used by
+`boundml <https://github.com/sirenard/boundml>`_. Using it directly may lead to unexpected behaviors.
 
 
 .. image:: https://raw.githubusercontent.com/ds4dm/ecole/master/docs/_static/images/ecole-logo.svg
