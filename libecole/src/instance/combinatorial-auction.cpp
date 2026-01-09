@@ -59,7 +59,7 @@ public:
 
 	template <typename T> void log(T&& message) {
 		if (print) {
-			fmt::print(pattern, std::forward<T>(message));
+			fmt::print(fmt::runtime(pattern), std::forward<T>(message));
 		}
 	}
 
