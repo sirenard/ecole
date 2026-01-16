@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <optional>
 
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 
 #include "ecole/default.hpp"
 #include "ecole/dynamics/parts.hpp"

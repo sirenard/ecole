@@ -2,7 +2,7 @@
 #include <tuple>
 
 #include <catch2/catch.hpp>
-#include <xtensor/xmath.hpp>
+#include <xtensor/containers/xmath.hpp>
 #include <xtensor/xsort.hpp>
 
 #include <scip/scip.h>

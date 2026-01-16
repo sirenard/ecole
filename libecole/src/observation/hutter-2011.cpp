@@ -10,10 +10,10 @@
 #include <range/v3/view/iota.hpp>
 #include <range/v3/view/transform.hpp>
 #include <scip/scip.h>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/xindex_view.hpp>
 #include <xtensor/xsort.hpp>
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 #include <xtensor/xview.hpp>
 
 #include "ecole/observation/hutter-2011.hpp"

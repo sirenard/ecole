@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <scip/scip.h>
 #include <scip/struct_lp.h>
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/xnorm.hpp>
 #include <xtensor/xview.hpp>
 

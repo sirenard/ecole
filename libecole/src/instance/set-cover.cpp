@@ -3,7 +3,7 @@
 
 #include <xtensor/xrandom.hpp>
 #include <xtensor/xsort.hpp>
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 #include <xtensor/xview.hpp>
 
 #include "ecole/instance/set-cover.hpp"

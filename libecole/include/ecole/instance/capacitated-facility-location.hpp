@@ -2,7 +2,7 @@
 
 #include <cstddef>
 #include <utility>
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 
 #include "ecole/export.hpp"
 #include "ecole/instance/abstract.hpp"

@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 
 #include "ecole/export.hpp"
 #include "ecole/observation/abstract.hpp"

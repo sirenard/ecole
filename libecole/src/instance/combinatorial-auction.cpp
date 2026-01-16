@@ -6,11 +6,11 @@
 
 #include <fmt/format.h>
 
-#include <xtensor/xadapt.hpp>
+#include <xtensor/containers/xadapt.hpp>
 #include <xtensor/xindex_view.hpp>
 #include <xtensor/xrandom.hpp>
 #include <xtensor/xsort.hpp>
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 #include <xtensor/xview.hpp>
 
 #include "ecole/instance/combinatorial-auction.hpp"

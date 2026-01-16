@@ -3,7 +3,7 @@
 #include <memory>
 #include <optional>
 #include <vector>
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 
 #include <nonstd/span.hpp>
 #include <scip/cons_linear.h>

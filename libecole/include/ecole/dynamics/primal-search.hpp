@@ -7,7 +7,7 @@
 #include <nonstd/span.hpp>
 #include <scip/def.h>
 #include <scip/type_result.h>
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 
 #include "ecole/dynamics/parts.hpp"
 #include "ecole/export.hpp"

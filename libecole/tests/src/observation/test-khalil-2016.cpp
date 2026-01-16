@@ -3,8 +3,8 @@
 #include <range/v3/view/transform.hpp>
 #include <scip/scip.h>
 #include <xtensor/xindex_view.hpp>
-#include <xtensor/xmath.hpp>
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xmath.hpp>
+#include <xtensor/containers/xtensor.hpp>
 #include <xtensor/xview.hpp>
 
 #include "ecole/observation/khalil-2016.hpp"

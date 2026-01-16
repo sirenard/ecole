@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <tuple>
 
-#include <xtensor/xtensor.hpp>
+#include <xtensor/containers/xtensor.hpp>
 
 namespace ecole::utility {
 
