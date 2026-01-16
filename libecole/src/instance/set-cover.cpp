@@ -2,7 +2,7 @@
 #include <map>
 
 #include <xtensor/generators/xrandom.hpp>
-#include <xtensor/xsort.hpp>
+#include <xtensor/misc/xsort.hpp>
 #include <xtensor/containers/xtensor.hpp>
 #include <xtensor/views/xview.hpp>
 

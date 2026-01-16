@@ -3,7 +3,7 @@
 
 #include <catch2/catch.hpp>
 #include <xtensor/containers/xmath.hpp>
-#include <xtensor/xsort.hpp>
+#include <xtensor/misc/xsort.hpp>
 
 #include "ecole/dynamics/branching.hpp"
 #include "ecole/exception.hpp"
