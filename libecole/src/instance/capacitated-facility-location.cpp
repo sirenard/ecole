@@ -4,10 +4,10 @@
 
 #include <fmt/format.h>
 #include <range/v3/view/enumerate.hpp>
-#include <xtensor/containers/xmath.hpp>
-#include <xtensor/xrandom.hpp>
+#include <xtensor/core/xmath.hpp>
+#include <xtensor/generators/xrandom.hpp>
 #include <xtensor/containers/xtensor.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include "ecole/instance/capacitated-facility-location.hpp"
 #include "ecole/scip/cons.hpp"

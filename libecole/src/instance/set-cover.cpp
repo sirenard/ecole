@@ -1,10 +1,10 @@
 #include <fmt/format.h>
 #include <map>
 
-#include <xtensor/xrandom.hpp>
+#include <xtensor/generators/xrandom.hpp>
 #include <xtensor/xsort.hpp>
 #include <xtensor/containers/xtensor.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include "ecole/instance/set-cover.hpp"
 #include "ecole/scip/cons.hpp"

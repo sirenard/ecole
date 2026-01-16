@@ -2,10 +2,10 @@
 #include <range/v3/view/enumerate.hpp>
 #include <range/v3/view/transform.hpp>
 #include <scip/scip.h>
-#include <xtensor/xindex_view.hpp>
-#include <xtensor/containers/xmath.hpp>
+#include <xtensor/views/xindex_view.hpp>
+#include <xtensor/core/xmath.hpp>
 #include <xtensor/containers/xtensor.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include "ecole/observation/khalil-2016.hpp"
 #include "ecole/tweak/range.hpp"

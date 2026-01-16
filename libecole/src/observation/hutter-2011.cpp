@@ -11,10 +11,10 @@
 #include <range/v3/view/transform.hpp>
 #include <scip/scip.h>
 #include <xtensor/containers/xadapt.hpp>
-#include <xtensor/xindex_view.hpp>
+#include <xtensor/views/xindex_view.hpp>
 #include <xtensor/xsort.hpp>
 #include <xtensor/containers/xtensor.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include "ecole/observation/hutter-2011.hpp"
 #include "ecole/scip/cons.hpp"

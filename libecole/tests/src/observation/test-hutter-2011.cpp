@@ -3,7 +3,7 @@
 #include <type_traits>
 
 #include <catch2/catch.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include "ecole/observation/hutter-2011.hpp"
 

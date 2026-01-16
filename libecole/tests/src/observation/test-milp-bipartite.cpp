@@ -1,8 +1,8 @@
 #include <cstddef>
 
 #include <catch2/catch.hpp>
-#include <xtensor/containers/xmath.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/core/xmath.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include "ecole/observation/milp-bipartite.hpp"
 

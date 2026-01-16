@@ -5,8 +5,8 @@
 #include <scip/scip.h>
 #include <scip/struct_lp.h>
 #include <xtensor/containers/xadapt.hpp>
-#include <xtensor/xnorm.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/reducers/xnorm.hpp>
+#include <xtensor/views/xview.hpp>
 
 #include "ecole/exception.hpp"
 #include "ecole/observation/milp-bipartite.hpp"
