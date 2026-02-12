@@ -38,7 +38,6 @@ scip::Model CapacitatedFacilityLocationGenerator::next() {
 }
 
 void CapacitatedFacilityLocationGenerator::seed(Seed seed) {
-	facilities_initialized = false;
 	rng.seed(seed);
 }
 
@@ -166,7 +165,7 @@ auto add_capacity_cons(
 	xvector const& capacities) -> void {
 	auto const inf = SCIPinfinity(scip);
 	// Transposing and asserting row major as we pass the pointer as an array to SCIP when creating constraints.
-	serving_vars = xt::transpose(std::move(serving_vars));
+	serving_vars = xt::xtensor<SCIP_VAR*, 2>{xt::transpose(serving_vars)};
 	assert(serving_vars.layout() == xt::layout_type::row_major);
 
 	auto const [n_facilities, n_customers] = serving_vars.shape();
@@ -228,35 +227,22 @@ scip::Model CapacitatedFacilityLocationGenerator::generate_instance(
 		return xt::random::randint({n}, interval.first, interval.second, rng);
 	};
 
-	if(!facilities_initialized){
-		if(parameters.fixed_facilities){
-			facilities_initialized = true;
-		}
-		// Facilities capacity for serving customer demand
-		capacities = static_cast<xvector>(randint(parameters.n_facilities, parameters.capacity_interval));
-		// Fixed costs for opening facilities
-		fixed_costs = static_cast<xvector>(
-			randint(parameters.n_facilities, parameters.fixed_cost_scale_interval) * xt::sqrt(capacities) +
-			randint(parameters.n_facilities, parameters.fixed_cost_cste_interval));
-	}
-
 	// Customer demand
-	auto demands = static_cast<xvector>(randint(parameters.n_customers, parameters.demand_interval));
-
-
+	auto const demands = static_cast<xvector>(randint(parameters.n_customers, parameters.demand_interval));
+	// Facilities capacity for serving customer demand
+	auto capacities = static_cast<xvector>(randint(parameters.n_facilities, parameters.capacity_interval));
+	// Fixed costs for opening facilities
+	auto const fixed_costs = static_cast<xvector>(
+		randint(parameters.n_facilities, parameters.fixed_cost_scale_interval) * xt::sqrt(capacities) +
+		randint(parameters.n_facilities, parameters.fixed_cost_cste_interval));
 	// transport costs from facility to customers
-	auto transportation_costs = static_cast<xmatrix>(
+	auto const transportation_costs = static_cast<xmatrix>(
 		unit_transportation_costs(parameters.n_customers, parameters.n_facilities, rng) *
 		xt::view(demands, xt::all(), xt::newaxis()));
 
-	if(!parameters.fixed_facilities){
-		// Scale capacities according to ratio after sampling as stated in Cornuejols et al. (1991).
-		capacities = capacities * parameters.ratio * xt::sum(demands)() / xt::sum(capacities)();
-		capacities = xt::nearbyint(capacities);
-	} else{ //scale the demand depending on the capacities so the capacity is constant
-		demands = demands * (1.0 / parameters.ratio) * xt::sum(capacities)() / xt::sum(demands)();
-		demands = xt::nearbyint(demands);
-	}
+	// Scale capacities according to ratio after sampling as stated in Cornuejols et al. (1991).
+	capacities = capacities * parameters.ratio * xt::sum(demands)() / xt::sum(capacities)();
+	capacities = xt::nearbyint(capacities);
 
 	auto model = scip::Model::prob_basic();
 	model.set_name(fmt::format("CapacitatedFacilityLocation-{}-{}", parameters.n_customers, parameters.n_facilities));
