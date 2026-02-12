@@ -283,7 +283,6 @@ void bind_submodule(py::module const& m) {
 		Member{"capacity_interval", &CapacitatedFacilityLocationGenerator::Parameters::capacity_interval},
 		Member{"fixed_cost_cste_interval", &CapacitatedFacilityLocationGenerator::Parameters::fixed_cost_cste_interval},
 		Member{"fixed_cost_scale_interval", &CapacitatedFacilityLocationGenerator::Parameters::fixed_cost_scale_interval},
-		Member{"fixed_facilities", &CapacitatedFacilityLocationGenerator::Parameters::fixed_facilities},
 	};
 	// Bind CapacitatedFacilityLocationGenerator and remove intermediate Parameter class
 	auto capacitated_facility_location_gen =
